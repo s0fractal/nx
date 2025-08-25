@@ -432,8 +432,6 @@ export function createTempNpmDirectory(skipCopy = false) {
       isNonJs ? getNxInstallationPath(workspaceRoot) : workspaceRoot,
       dir
     );
-
-    copyPackageManagerConfigurationFiles(workspaceRoot, dir);
   }
 
   const cleanup = async () => {
