@@ -16,21 +16,21 @@ jobs:
     name: Report status
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
         with:
           version: 10.11.1
 
       - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           node-version: '20.19.0'
           cache: 'pnpm'
 
       - name: Cache node_modules
         id: cache-modules
-        uses: actions/cache@v3
+        uses: actions/cache@2f8e54208210a422b2efd51efaa6bd6d7ca8920f # v3
         with:
           lookup-only: true
           path: '**/node_modules'
@@ -41,7 +41,7 @@ jobs:
 
       - name: Download artifact
         id: download-artifact
-        uses: dawidd6/action-download-artifact@v2 # Needed since we are downloading artifact from a different workflow run, official actions/download-artifact doesn't support this.
+        uses: dawidd6/action-download-artifact@268677152d06ba59fcec7a7f0b5d961b6ccd7e1e # v2 # Needed since we are downloading artifact from a different workflow run, official actions/download-artifact doesn't support this.
         with:
           name: cached-issue-data
           path: ${{ github.workspace }}/scripts/issues-scraper/cached
@@ -54,14 +54,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: cached-issue-data
           path: ./scripts/issues-scraper/cached/data.json
 
       - name: Send GitHub Action trigger data to Slack workflow
         id: slack
-        uses: slackapi/slack-github-action@v1.23.0
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844 # v1.23.0
         with:
           payload: ${{ steps.collect.outputs.SLACK_MESSAGE }}
         env:
