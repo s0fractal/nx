@@ -1,0 +1,63 @@
+{
+  "name": "semver",
+  "version": "1.0.0-genome",
+  "main": "p2f9e07426b34",
+  "genes": [
+    {
+      "pHash": "p2f9e07426b34",
+      "exports": [
+        "parse",
+        "valid",
+        "clean",
+        "inc",
+        "diff",
+        "major",
+        "minor",
+        "patch",
+        "prerelease",
+        "compare",
+        "rcompare",
+        "compareLoose",
+        "compareBuild",
+        "sort",
+        "rsort",
+        "gt",
+        "lt",
+        "eq",
+        "neq",
+        "gte",
+        "lte",
+        "cmp",
+        "coerce",
+        "Comparator",
+        "Range",
+        "satisfies",
+        "toComparators",
+        "maxSatisfying",
+        "minSatisfying",
+        "minVersion",
+        "validRange",
+        "outside",
+        "gtr",
+        "ltr",
+        "intersects",
+        "simplifyRange",
+        "subset",
+        "SemVer",
+        "re",
+        "src",
+        "tokens",
+        "t",
+        "SEMVER_SPEC_VERSION",
+        "RELEASE_TYPES",
+        "compareIdentifiers",
+        "rcompareIdentifiers"
+      ]
+    }
+  ],
+  "dependencies": {},
+  "genome": {
+    "digestedAt": "2025-09-09T05:51:20.851Z",
+    "level": "personal"
+  }
+}

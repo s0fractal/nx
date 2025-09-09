@@ -1,0 +1,12 @@
+{
+  "bundleHash": "pd4347876e96f",
+  "packageName": "tslib",
+  "level": "personal",
+  "totalGenes": 3,
+  "totalSize": 44013,
+  "internalDeps": [
+    "../tslib.js"
+  ],
+  "externalDeps": [],
+  "digestedAt": "2025-09-09T05:53:09.324Z"
+}

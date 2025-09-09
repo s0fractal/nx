@@ -1,0 +1,16 @@
+{
+  "name": "yargs",
+  "version": "1.0.0-genome",
+  "main": "p0ad071e56581",
+  "genes": [
+    {
+      "pHash": "p0ad071e56581",
+      "exports": []
+    }
+  ],
+  "dependencies": {},
+  "genome": {
+    "digestedAt": "2025-09-09T05:51:20.819Z",
+    "level": "personal"
+  }
+}

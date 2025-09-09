@@ -1,7 +1,8 @@
 export function hashArray(content: string[]): string {
-  // Import as needed. There is also an issue running unit tests in Nx repo if this is a top-level import.
-  const { hashArray } = require('../native');
-  return hashArray(content);
+  // Use harmonized hasher with semantic understanding
+  const { hash_array_harmonized } = require('../native');
+  // Default to semantic hashing for code understanding
+  return hash_array_harmonized(content, true);
 }
 
 export function hashObject(obj: object): string {
@@ -17,7 +18,8 @@ export function hashObject(obj: object): string {
 }
 
 export function hashFile(filePath: string): string {
-  const { hashFile } = require('../native');
-
-  return hashFile(filePath);
+  // Use harmonized hasher for semantic file understanding
+  const { hash_file_harmonized } = require('../native');
+  // Semantic hashing for code files
+  return hash_file_harmonized(filePath, true);
 }

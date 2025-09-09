@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "genes": [
+    {
+      "name": "chalk",
+      "pHash": "p0bc8141d0ab8",
+      "exports": []
+    },
+    {
+      "name": "yargs",
+      "pHash": "p0ad071e56581",
+      "exports": []
+    },
+    {
+      "name": "glob",
+      "pHash": "p204448bdff4c",
+      "exports": []
+    },
+    {
+      "name": "semver",
+      "pHash": "p2f9e07426b34",
+      "exports": [
+        "parse",
+        "valid",
+        "clean",
+        "inc",
+        "diff",
+        "major",
+        "minor",
+        "patch",
+        "prerelease",
+        "compare",
+        "rcompare",
+        "compareLoose",
+        "compareBuild",
+        "sort",
+        "rsort",
+        "gt",
+        "lt",
+        "eq",
+        "neq",
+        "gte",
+        "lte",
+        "cmp",
+        "coerce",
+        "Comparator",
+        "Range",
+        "satisfies",
+        "toComparators",
+        "maxSatisfying",
+        "minSatisfying",
+        "minVersion",
+        "validRange",
+        "outside",
+        "gtr",
+        "ltr",
+        "intersects",
+        "simplifyRange",
+        "subset",
+        "SemVer",
+        "re",
+        "src",
+        "tokens",
+        "t",
+        "SEMVER_SPEC_VERSION",
+        "RELEASE_TYPES",
+        "compareIdentifiers",
+        "rcompareIdentifiers"
+      ]
+    }
+  ],
+  "mappings": {
+    "chalk": "p0bc8141d0ab8",
+    "yargs": "p0ad071e56581",
+    "glob": "p204448bdff4c",
+    "semver": "p2f9e07426b34"
+  }
+}

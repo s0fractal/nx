@@ -50,6 +50,8 @@ import {
 import { yargsSyncCheckCommand, yargsSyncCommand } from './sync/command-object';
 import { output } from '../utils/output';
 import { yargsMcpCommand } from './mcp/command-object';
+import { digestCommand } from '../commands/digest';
+import { greatDigestionCommand } from '../commands/great-digestion';
 
 // Ensure that the output takes up the available width of the terminal.
 yargs.wrap(yargs.terminalWidth());
@@ -98,6 +100,8 @@ export const commandsObject = yargs
   .command(yargsRunCommand)
   .command(yargsRunManyCommand)
   .command(yargsShowCommand)
+  .command(digestCommand)
+  .command(greatDigestionCommand)
   .command(yargsSyncCommand)
   .command(yargsSyncCheckCommand)
   .command(yargsViewLogsCommand)
