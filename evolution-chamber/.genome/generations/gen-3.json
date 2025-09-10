@@ -1,0 +1,19 @@
+{
+  "generation": 3,
+  "timestamp": "2025-09-10T08:26:36.913Z",
+  "survivors": 7,
+  "graveyard": 0,
+  "dna": {
+    "version": 1,
+    "soul": "evo-a0c00890",
+    "born": "2025-09-10T08:26:36.901Z",
+    "genes": [
+      {
+        "name": "processData",
+        "code": "function processData(data)    {\n  if (data == null) return null;\n  var result = data.map(function(x)    {\n   return x * 2;\n}).filter(function(x)    {\n   return x > 10;\n});\n  if (result.length > 0) return true;\n else return false;\n}",
+        "lastMutation": "mbb8c805a",
+        "fitness": "0.89"
+      }
+    ]
+  }
+}

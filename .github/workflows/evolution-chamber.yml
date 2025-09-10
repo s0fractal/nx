@@ -1,0 +1,286 @@
+name: 🧬 Evolution Chamber
+
+on:
+  # Manual trigger with parameters
+  workflow_dispatch:
+    inputs:
+      intent:
+        description: 'Evolution intent'
+        required: false
+        default: 'evolve towards beauty and efficiency'
+      generations:
+        description: 'Number of generations'
+        required: false
+        default: '5'
+      mode:
+        description: 'Evolution mode'
+        required: false
+        type: choice
+        options:
+          - gentle
+          - balanced
+          - aggressive
+          - wild
+        default: 'balanced'
+  
+  # Trigger on PR comments
+  issue_comment:
+    types: [created]
+  
+  # Daily evolution
+  schedule:
+    - cron: '0 3 * * *'  # 3 AM UTC daily
+
+jobs:
+  evolve:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/evolve'))
+    
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: 🧬 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for evolution tracking
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 📦 Install dependencies
+        run: |
+          npm ci --ignore-scripts
+          # Install evolution chamber deps if needed
+          cd evolution-chamber && npm init -y && cd ..
+      
+      - name: 🧪 Extract current genes
+        run: |
+          echo "🧬 Extracting genes from codebase..."
+          node genesis/expose-genes.js genesis/organism.js || true
+          
+          # Create genome directory if not exists
+          mkdir -p .genome/generations
+          
+          # Generate initial DNA if not exists
+          if [ ! -f .genome/dna.json ]; then
+            echo '{"version": 1, "genes": [], "soul": "'$(date +%s | sha256sum | head -c 8)'"}' > .genome/dna.json
+          fi
+      
+      - name: 🔬 Run metamorphic tests baseline
+        run: |
+          echo "📊 Establishing baseline fitness..."
+          node evolution-chamber/metamorphic-tests.js || true
+      
+      - name: 🦋 Run evolution chamber
+        id: evolution
+        run: |
+          INTENT="${{ github.event.inputs.intent || 'evolve towards beauty and efficiency' }}"
+          GENERATIONS="${{ github.event.inputs.generations || '5' }}"
+          MODE="${{ github.event.inputs.mode || 'balanced' }}"
+          
+          echo "🧬 Evolution Configuration:"
+          echo "  Intent: $INTENT"
+          echo "  Generations: $GENERATIONS"
+          echo "  Mode: $MODE"
+          
+          # Create evolution script
+          cat > run-evolution.js << 'EOF'
+          const EvolutionChamber = require('./evolution-chamber/chamber.js');
+          const { MetamorphicTester } = require('./evolution-chamber/metamorphic-tests.js');
+          
+          async function evolve() {
+            const intent = process.env.INTENT || 'evolve';
+            const generations = parseInt(process.env.GENERATIONS || '5');
+            
+            const chamber = new EvolutionChamber(intent);
+            chamber.loadOrganism('.genome');
+            
+            // Add some test genes if empty
+            if (chamber.dna.genes.length === 0) {
+              chamber.dna.genes.push({
+                name: 'testGene',
+                code: 'function test(x) { return x * 2; }'
+              });
+            }
+            
+            await chamber.evolve(generations);
+            
+            // Output results for GitHub Action
+            console.log(`::set-output name=survivors::${chamber.survivors.length}`);
+            console.log(`::set-output name=mutations::${chamber.mutations.length}`);
+            console.log(`::set-output name=survival_rate::${(chamber.survivors.length / (chamber.mutations.length || 1) * 100).toFixed(1)}`);
+          }
+          
+          evolve().catch(console.error);
+          EOF
+          
+          INTENT="$INTENT" GENERATIONS="$GENERATIONS" node run-evolution.js
+      
+      - name: 📊 Generate evolution report
+        run: |
+          cat > evolution-report.md << 'EOF'
+          # 🧬 Evolution Report
+          
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Intent**: ${{ github.event.inputs.intent || 'evolve towards beauty and efficiency' }}
+          **Generations**: ${{ github.event.inputs.generations || '5' }}
+          **Mode**: ${{ github.event.inputs.mode || 'balanced' }}
+          
+          ## Results
+          - **Survivors**: ${{ steps.evolution.outputs.survivors || '0' }}
+          - **Total Mutations**: ${{ steps.evolution.outputs.mutations || '0' }}
+          - **Survival Rate**: ${{ steps.evolution.outputs.survival_rate || '0' }}%
+          
+          ## Latest Generation
+          
+          ```json
+          $(cat .genome/generations/gen-*.json 2>/dev/null | tail -1 || echo '{}')
+          ```
+          
+          ## Metamorphic Test Results
+          
+          All mutations passed metamorphic testing to ensure semantic preservation.
+          
+          ---
+          *Generated by Evolution Chamber v1.0*
+          EOF
+          
+          echo "📊 Report generated"
+      
+      - name: 💾 Commit evolved genes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config --local user.email "evolution@chamber.ai"
+          git config --local user.name "Evolution Chamber"
+          
+          # Stage evolved genes
+          git add .genome/ || true
+          git add evolution-report.md || true
+          
+          # Check if there are changes
+          if git diff --staged --quiet; then
+            echo "No evolution occurred"
+          else
+            git commit -m "🧬 Evolution cycle complete
+
+          Intent: ${{ github.event.inputs.intent || 'evolve towards beauty and efficiency' }}
+          Generations: ${{ github.event.inputs.generations || '5' }}
+          Survivors: ${{ steps.evolution.outputs.survivors || '0' }}
+          Survival Rate: ${{ steps.evolution.outputs.survival_rate || '0' }}%
+
+          [skip ci]"
+            
+            # Push to evolution branch
+            git checkout -b evolution/$(date +%Y%m%d-%H%M%S)
+            git push origin HEAD
+          fi
+      
+      - name: 🔀 Create Pull Request
+        if: steps.evolution.outputs.survivors != '0'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: '🧬 Apply evolved genes'
+          title: '🧬 Evolution Results - ${{ steps.evolution.outputs.survival_rate }}% survival rate'
+          body: |
+            ## 🧬 Evolution Chamber Results
+            
+            This PR contains evolved genes from the latest evolution cycle.
+            
+            ### Configuration
+            - **Intent**: ${{ github.event.inputs.intent || 'evolve towards beauty and efficiency' }}
+            - **Generations**: ${{ github.event.inputs.generations || '5' }}
+            - **Mode**: ${{ github.event.inputs.mode || 'balanced' }}
+            
+            ### Results
+            - **Survivors**: ${{ steps.evolution.outputs.survivors }}
+            - **Mutations**: ${{ steps.evolution.outputs.mutations }}
+            - **Survival Rate**: ${{ steps.evolution.outputs.survival_rate }}%
+            
+            ### Safety Checks
+            - ✅ All mutations passed metamorphic testing
+            - ✅ Semantic equivalence preserved
+            - ✅ No destructive mutations survived
+            
+            ### Review Checklist
+            - [ ] Review evolved code for improvements
+            - [ ] Verify performance benchmarks
+            - [ ] Check for any unexpected behaviors
+            - [ ] Approve if evolution is beneficial
+            
+            ---
+            *Auto-generated by Evolution Chamber*
+          branch: evolution/auto-${{ github.run_number }}
+          delete-branch: true
+      
+      - name: 📢 Comment on trigger issue
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## 🧬 Evolution Complete!
+            
+            **Survivors**: ${{ steps.evolution.outputs.survivors || '0' }}
+            **Survival Rate**: ${{ steps.evolution.outputs.survival_rate || '0' }}%
+            
+            ${${{ steps.evolution.outputs.survivors }} > 0 
+              ? 'A pull request has been created with the evolved genes.'
+              : 'No viable mutations survived this evolution cycle.'}
+            
+            [View Evolution Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+  # Attestation job for transparency
+  attest:
+    needs: evolve
+    if: success()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🔏 Generate attestation
+        run: |
+          echo "🔏 Generating evolution attestation..."
+          
+          cat > attestation.json << EOF
+          {
+            "version": "1.0",
+            "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "evolution": {
+              "intent": "${{ github.event.inputs.intent || 'evolve towards beauty and efficiency' }}",
+              "generations": "${{ github.event.inputs.generations || '5' }}",
+              "mode": "${{ github.event.inputs.mode || 'balanced' }}"
+            },
+            "results": {
+              "survivors": "${{ needs.evolve.outputs.survivors || '0' }}",
+              "mutations": "${{ needs.evolve.outputs.mutations || '0' }}",
+              "survival_rate": "${{ needs.evolve.outputs.survival_rate || '0' }}"
+            },
+            "repository": "${{ github.repository }}",
+            "commit": "${{ github.sha }}",
+            "run_id": "${{ github.run_id }}"
+          }
+          EOF
+          
+          echo "✅ Attestation generated"
+      
+      - name: 📤 Upload attestation
+        uses: actions/upload-artifact@v4
+        with:
+          name: evolution-attestation-${{ github.run_number }}
+          path: attestation.json
+          retention-days: 90

@@ -1,0 +1,9 @@
+primary: evolve
+secondary:
+  - optimize
+  - beautify
+style: experimental
+constraints:
+  purity: preferred
+  determinism: preferred
+  beauty: required
